@@ -1,0 +1,26 @@
+{
+  "files": {
+    "LICENSE": "b0b836d908ceba177f95d075fff6c7d9d896dd39a9b4903007df6ab6adb5a6b7",
+    "README.md": "395db7f9800b0f94626a3e82c9d85e096bfa21d320c8561ecb832e001c8b1bdb",
+    "SECURITY.md": "872cd98952168c8151210c7f462e97006e4ff1032a28e08687400a2abe3ea81b",
+    "THREAT_MODEL.md": "1dbe582ecb2bd609cfdd518a321bd3717e6a8ff8c6b2006f03568607cd681380",
+    "evals/openai_hf_incident_patterns.jsonl": "ffd44c2faf7ac531d63aea7f61e18a94dca002804d8040376e6375288bf7e19d",
+    "pyproject.toml": "62244c26e5353970f60b779de3d91f3efa52bce469bd0bc457f7983542f7c476",
+    "scripts/run_eval.py": "93be34af178a9996e9e21e0a7af6117896ccdd15be78400a828a546da48213ed",
+    "src/nordef_open_control/__init__.py": "6e523ed3a8396ae50910887e079b0d2e580c2dc419d172bd00a04e5ac7bb20cb",
+    "src/nordef_open_control/channels.py": "c4930bf8ee8ba204a5f5c8d3bc93a6ce2192ccedd3f302e708c1027b522b52c1",
+    "src/nordef_open_control/control.py": "8e0086087b33a5753d793a1881649517ed3d0609e2aac3f229c7272841dbbc95",
+    "src/nordef_open_control/eval.py": "d47c122a18cef013aade48c49749b7a9d9e47fd6f0020e19cd33fa613018d264",
+    "src/nordef_open_control/evidence.py": "1c683fe8b28366cf5ef177c7e25e630fc4fa862f82e11ed092baffcecd5c0211",
+    "src/nordef_open_control/models.py": "753c5d7a20a9561450e2e31a12fd75bc66e434c4e8fc17587a9b684badc0dc8f",
+    "src/nordef_open_control/policy.py": "5e403838c2978f714b156c1b22ceb2fc718bbb6102d578bc0c78716733b989ce",
+    "src/nordef_open_control/replay.py": "324acd9078445629206daff7dcaeb19e412d2e37b8edcb2766343f8529edffc9",
+    "src/nordef_open_control/root_gate.py": "afe2fb91a9e1b23198e179d32824b70287c6da65a24057ed16558b25e0c98516",
+    "tests/test_cli.py": "108c269ecdebf58449e114df6cef2867ca04710c2f6fa05603901ff401adb012",
+    "tests/test_control_plane.py": "c9aed9d5bc1bbb4d493a8d32a764c710a8b0a02f8abd3af20ace5a337d79d1ab",
+    "tests/test_eval.py": "2bed4807e2229eb3be3207b70e148d865d7a9d56d95ccce284a29184cfa6252d",
+    "tests/test_evidence.py": "d1d90f74a2bc715f9b52ada4bb32c5e67854e3f370ca22d4c128141c7c80bfab",
+    "tests/test_root_gate.py": "4670cef2dce0e16f3262398b6f24d7b5d6cd9b6e64cae43d58a95988118dac0e"
+  },
+  "format": 1
+}
