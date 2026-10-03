@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Authorize an MCP client's SSH public key. The key can only reach the MCP socket.
+#   nordef-add-client 'ssh-ed25519 AAAA... agent-vm-101'
+set -euo pipefail
+KEY="${1:?usage: nordef-add-client '<ssh public key>'}"
+case "$KEY" in ssh-ed25519\ *|ecdsa-sha2-*|sk-ssh-ed25519@openssh.com\ *) ;; *)
+  echo "expected an ssh-ed25519/ecdsa public key" >&2; exit 1;; esac
+HOME_DIR="$(getent passwd nordef-client | cut -d: -f6)"
+install -d -m 0700 -o nordef-client -g nordef-client "$HOME_DIR/.ssh"
+AUTH="$HOME_DIR/.ssh/authorized_keys"
+echo "restrict $KEY" >> "$AUTH"
+chown nordef-client:nordef-client "$AUTH"
+chmod 0600 "$AUTH"
+echo "client key added"

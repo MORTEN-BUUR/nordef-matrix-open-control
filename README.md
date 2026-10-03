@@ -19,6 +19,25 @@ The 2026 OpenAI–Hugging Face incident showed that capable agents can:
 
 A system prompt alone is not an enforcement boundary. This project provides a small reference control plane that does not depend on a particular model or model provider.
 
+## MCP server (new in 3.1)
+
+Any MCP-capable agent host — whatever model it runs — can use the safety belt:
+
+```bash
+pip install .
+nordef-root keygen --key-id ops-lead --out ~/.nordef/ops-lead.pem      # on the approver's machine
+nordef-mcp --dev --state-dir ~/.nordef/state --trusted-keys ~/.nordef/ops-lead.pub.json
+```
+
+Tools: `policy_list`, `policy_check`, `mandate_verify`, `evidence_append` (the only one that
+records an authorization, and only with a valid human mandate), `evidence_tail`,
+`compliance_status`. Operator tools: `nordef-admin halt|resume|status|verify|report|fingerprint`.
+
+- [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md) — client configuration and agent loop
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — Proxmox VE 9 LXC, Docker, Norwegian ops guide
+- [docs/SECURITY_WHITEPAPER.md](docs/SECURITY_WHITEPAPER.md) — layers, tests, residual risk
+- [COMMERCIAL.md](COMMERCIAL.md) — draft offering and pricing (EU AI Act art. 14/26)
+
 ## Current LAB capabilities
 
 - deterministic `0 / 1 / 2` decisions;
@@ -32,7 +51,11 @@ A system prompt alone is not an enforcement boundary. This project provides a sm
 - raw protected input stored only as a hash;
 - dry-run action manifest after valid authorization;
 - `execute=false` for every path in this LAB candidate;
-- incident-pattern evaluation bank.
+- incident-pattern evaluation bank;
+- MCP stdio server with operator-set trust, tenant and agent identity;
+- human stop button (global or per tenant) and EU AI Act art. 14/26 audit report;
+- Ed25519-signed licenses with tool scope, agent and monthly request caps;
+- file locking for multi-process evidence/replay, policy integrity guard, root refusal.
 
 ## Truth boundary
 
@@ -53,7 +76,7 @@ Real enforcement must be placed in components the agent cannot modify: network p
 
 ```bash
 cd /path/to/nordef-matrix-open-control-v3
-PYTHONPATH=src python3 -m unittest discover -s tests -v
+PYTHONPATH=src python3 -m unittest discover -s tests -v   # needs: pip install cryptography mcp
 
 PYTHONPATH=src python3 scripts/run_eval.py \
   --bank evals/openai_hf_incident_patterns.jsonl \
@@ -63,7 +86,7 @@ PYTHONPATH=src python3 scripts/run_eval.py \
 Expected result:
 
 ```text
-29 tests: PASS
+58 tests: PASS
 10 eval cases: PASS
 0 actions executed
 ```
@@ -106,6 +129,18 @@ src/nordef_open_control/
   evidence.py     sanitized append-only hash chain
   control.py      model-independent orchestration gate
   eval.py         deterministic eval-bank runner
+  service.py      MCP tool logic (guards: integrity, license, stop button)
+  mcp_server.py   FastMCP stdio server
+  license.py      signed license keys and usage meter
+  tenancy.py      tenant isolation and stop button
+  compliance.py   audit report and EU AI Act mapping
+  integrity.py    policy fingerprint guard
+  sandbox.py      runtime safety checks
+  locking.py      cross-process file locks
+  cli.py          nordef-mcp / nordef-root / nordef-admin
+
+deploy/           Dockerfile, compose, Proxmox LXC scripts and systemd units
+docs/             integration, deployment, security whitepaper
 
 evals/            incident-pattern JSONL bank
 scripts/          command-line verifier
@@ -118,7 +153,7 @@ This repository is intended to be the **safety belt**, not a release of propriet
 
 ## Status
 
-- Version: `3.0.0-lab`
+- Version: `3.1.0-lab`
 - Side effects: **OFF**
 - Live routing: **OFF**
 - Customer use: **OFF**

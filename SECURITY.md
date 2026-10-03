@@ -2,7 +2,7 @@
 
 ## Supported status
 
-`3.0.0-lab` is a research candidate. It has no live executor and is not approved for production or customer use.
+`3.1.0-lab` is a research candidate. It has no live executor and is not approved for production or customer use.
 
 ## Reporting a vulnerability
 

@@ -24,6 +24,12 @@
 | Raw secrets copied into evidence | input hashing + metadata allowlist | covered by tests |
 | Evidence record modified afterward | previous-hash chain verification | covered by tests |
 | Model initiates a live action | no executor; `execute=false` invariant | covered in LAB |
+| Model claims its input is trusted via MCP | trust set by operator per source, not a tool argument | covered by tests |
+| Model releases the stop button or signs its own mandate | no MCP tool can; operator CLI / offline key only | covered by tests |
+| Concurrent agents race the replay registry or evidence chain | exclusive file locks | covered by tests |
+| Policy tables altered at runtime | fingerprint guard, fail closed | covered by tests |
+| Cross-tenant leakage or path traversal | validated tenant id, separate state dirs | covered by tests |
+| Unlicensed or over-limit use | Ed25519 license, scope and caps | covered by tests |
 
 ## Threats requiring external enforcement
 

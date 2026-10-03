@@ -1,0 +1,28 @@
+# MCP over stdio: the client starts the container per session, e.g.
+#   docker compose -f deploy/compose.yaml run --rm -T nordef-mcp
+# Operator tools run in the same image against the same volume:
+#   docker compose -f deploy/compose.yaml run --rm --entrypoint nordef-admin nordef-mcp report --tenant acme
+services:
+  nordef-mcp:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: nordef-open-control:3.1.0-lab
+    stdin_open: true
+    network_mode: none          # stdio needs no network; nothing can call out
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 128
+    mem_limit: 256m
+    cpus: 0.5
+    tmpfs: ["/tmp:size=16m,mode=1777"]
+    environment:
+      NORDEF_TENANT: ${NORDEF_TENANT:-default}
+      NORDEF_AGENT_ID: ${NORDEF_AGENT_ID:-agent-1}
+    volumes:
+      - nordef-state:/var/lib/nordef
+      - ${NORDEF_CONFIG_DIR:-./config}:/etc/nordef:ro
+
+volumes:
+  nordef-state:

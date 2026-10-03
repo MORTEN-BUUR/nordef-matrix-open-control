@@ -1,0 +1,16 @@
+# Local unix socket for MCP clients. No TCP port is opened.
+# Clients in other VMs reach it over SSH:  ssh -T nordef-client@<lxc> (ForceCommand connects here)
+[Unit]
+Description=NORDEF Open Control MCP socket
+
+[Socket]
+ListenStream=/run/nordef/mcp.sock
+Accept=yes
+SocketUser=nordef
+SocketGroup=nordef-clients
+SocketMode=0660
+DirectoryMode=0750
+MaxConnections=32
+
+[Install]
+WantedBy=sockets.target

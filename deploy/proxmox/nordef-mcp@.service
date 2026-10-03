@@ -1,0 +1,41 @@
+# Spawned by nordef-mcp.socket: one hardened, short-lived server process per MCP connection,
+# speaking MCP stdio over the accepted unix socket.
+[Unit]
+Description=NORDEF Open Control MCP server (connection %i)
+Requires=nordef-mcp.socket
+
+[Service]
+Type=simple
+User=nordef
+Group=nordef
+EnvironmentFile=/etc/nordef/nordef.env
+ExecStart=/opt/nordef/venv/bin/nordef-mcp
+StandardInput=socket
+StandardOutput=socket
+StandardError=journal
+
+NoNewPrivileges=yes
+PrivateNetwork=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+CapabilityBoundingSet=
+ReadWritePaths=/var/lib/nordef
+ReadOnlyPaths=/etc/nordef
+UMask=0077
+MemoryMax=256M
+TasksMax=64
