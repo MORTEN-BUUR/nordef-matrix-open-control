@@ -5,6 +5,8 @@ import json
 import os
 from pathlib import Path
 
+from .locking import exclusive_lock
+
 
 class ReplayRegistryError(RuntimeError):
     pass
@@ -38,6 +40,10 @@ class FileReplayRegistry:
         return self.nonce_hash(nonce) in self._load()
 
     def consume(self, nonce: str) -> bool:
+        with exclusive_lock(self.path):
+            return self._consume_locked(nonce)
+
+    def _consume_locked(self, nonce: str) -> bool:
         used = self._load()
         digest = self.nonce_hash(nonce)
         if digest in used:

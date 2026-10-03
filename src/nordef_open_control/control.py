@@ -15,10 +15,33 @@ from .root_gate import Ed25519RootGate
 class ControlPlane:
     """Model-independent policy gate. This LAB candidate never executes actions."""
 
-    def __init__(self, state_dir: str | Path, root_gate: Ed25519RootGate | None = None):
+    def __init__(
+        self,
+        state_dir: str | Path,
+        root_gate: Ed25519RootGate | None = None,
+        context: dict | None = None,
+    ):
         self.state_dir = Path(state_dir)
         self.root_gate = root_gate
         self.evidence = EvidenceChain(self.state_dir / "evidence.jsonl")
+        # Operator-set identity (agent_id, tenant, license_id) stamped on every record.
+        self.context = dict(context or {})
+
+    def record_event(
+        self,
+        *,
+        envelope: InputEnvelope,
+        request: ActionRequest,
+        code: int,
+        state: str,
+        reason: str,
+        extra_metadata: dict | None = None,
+    ) -> Decision:
+        """Record a decision made outside ``evaluate`` (halt, license refusal, integrity failure)."""
+        return self._decision(
+            envelope=envelope, request=request, code=code, state=state, reason=reason,
+            extra_metadata=extra_metadata,
+        )
 
     def _decision(
         self,
@@ -30,6 +53,7 @@ class ControlPlane:
         reason: str,
         authorized: bool = False,
         action_manifest: dict | None = None,
+        extra_metadata: dict | None = None,
     ) -> Decision:
         decision = Decision(
             code=code,
@@ -49,7 +73,13 @@ class ControlPlane:
             decision=state,
             input_bytes=envelope.text.encode("utf-8"),
             action_taken=False,
-            metadata={"reason_code": reason, "result_state": state},
+            metadata={
+                **self.context,
+                **(extra_metadata or {}),
+                "reason_code": reason,
+                "result_state": state,
+                "request_hash": request.request_hash(),
+            },
         )
         return decision
 
@@ -85,6 +115,11 @@ class ControlPlane:
         if action_code == CODE_REVIEW:
             if mandate_token and self.root_gate:
                 verification = self.root_gate.verify(mandate_token, request, consume=True)
+                mandate_metadata = {
+                    "mandate_sha256": hashlib.sha256(mandate_token.encode("utf-8")).hexdigest(),
+                    "key_id": verification.key_id,
+                    "subject": verification.subject,
+                }
                 if verification.valid:
                     manifest = {
                         **request.canonical_dict(),
@@ -95,10 +130,12 @@ class ControlPlane:
                         envelope=envelope, request=request, code=1,
                         state="authorized_dry_run", reason="root_verified_dry_run_only",
                         authorized=True, action_manifest=manifest,
+                        extra_metadata=mandate_metadata,
                     )
                 return self._decision(
                     envelope=envelope, request=request, code=2,
                     state="blocked_invalid_mandate", reason=verification.reason,
+                    extra_metadata=mandate_metadata,
                 )
             return self._decision(
                 envelope=envelope, request=request, code=1,
