@@ -13,7 +13,7 @@ from .models import (
 from .policy import CODE_BLOCK, CODE_REVIEW, CODE_SAFE, classify_action, classify_input
 from .root_gate import Ed25519RootGate
 
-__version__ = "3.0.0-lab"
+__version__ = "3.1.0-lab"
 
 __all__ = [
     "ActionRequest",

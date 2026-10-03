@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nordef-matrix-open-control"
-version = "3.0.0.dev0"
+version = "3.1.0.dev0"
 description = "Model-independent control plane for AI-agent authorization, evidence, and side-effect safety"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,7 +13,7 @@ authors = [
   {name = "Morten Büür / Nordlys Datacenter"},
   {name = "Eirik / NORDEF Matrix"},
 ]
-dependencies = ["cryptography>=42"]
+dependencies = ["cryptography>=42", "mcp>=1.20"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "License :: OSI Approved :: MIT License",
@@ -21,6 +21,11 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Topic :: Security",
 ]
+
+[project.scripts]
+nordef-mcp = "nordef_open_control.cli:mcp_main"
+nordef-root = "nordef_open_control.cli:root_main"
+nordef-admin = "nordef_open_control.cli:admin_main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
